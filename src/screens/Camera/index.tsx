@@ -12,10 +12,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 export function CameraScreen() {
   const [type, setType] = useState(CameraType.back);
   const [permissionCamera, requestPermissionCamera] = Camera.useCameraPermissions();
-  const [permissionMedia, requestPermissionMedia] = MediaLibrary.usePermissions()
-  const [photo, setPhoto] = useState<CameraCapturedPicture | ImagePicker.ImagePickerAsset>()
-  const ref = useRef<Camera>(null)
-  const [takePhoto, setTakePhoto] = useState(false)
+  const [permissionMedia, requestPermissionMedia] = MediaLibrary.usePermissions();
+  const [photo, setPhoto] = useState<CameraCapturedPicture | ImagePicker.ImagePickerAsset>();
+  const ref = useRef<Camera>(null);
+  const [takePhoto, setTakePhoto] = useState(false);
+  const [verPhoto, setVerPhoto] = useState(1);
 
   if (!permissionCamera) {
     // Camera permissions are still loading
@@ -56,6 +57,7 @@ export function CameraScreen() {
     if (ref.current) {
       const picture = await ref.current.takePictureAsync()
       setPhoto(picture)
+      setVerPhoto(2)
     }
   }
   async function savePhoto() {
@@ -77,18 +79,24 @@ export function CameraScreen() {
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type} ref={ref} >
+      {verPhoto == 1 ?(
+        <>
         <TouchableOpacity onPress={toggleCameraType} >
           <MaterialIcons name="flip-camera-ios" size={50} color={colors.secondary} />
         </TouchableOpacity>
-
-        <ComponentButtonTakePicture onPress={takePicture} />
-      </Camera>
-      {photo && photo.uri && (
-        <Image source={{ uri: photo.uri }} style={styles.img} />
+          <Camera style={styles.camera} type={type} ref={ref}>
+            <ComponentButtonTakePicture onPress={takePicture} />
+          </Camera>
+        </>
+      ) : (
+        <>
+          {photo && photo.uri &&(
+            <Image source={{ uri:photo.uri}} style={styles.img} />
+          )}
+          <ComponentButtonInterface title='Salvar imagem' type='secondary' onPressI={savePhoto} />
+          <ComponentButtonInterface title='Abrir imagem' type='secondary' onPressI={pickImage} />
+        </>
       )}
-      <ComponentButtonInterface title='Salvar imagem' type='secondary' onPressI={savePhoto} />
-      <ComponentButtonInterface title='Abrir imagem' type='secondary' onPressI={pickImage} />
     </View>
   );
 }
