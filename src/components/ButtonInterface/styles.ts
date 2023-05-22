@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
         color: colors.white,
         fontWeight: "bold",
         padding: 10,
-        fontSize: 18,
+        fontSize: 10,
         textAlign: "center"
     }
 })

@@ -9,6 +9,8 @@ export const styles = StyleSheet.create({
       flex: 1,
       width: Dimensions.get('window').width * 0.7,
       height: Dimensions.get('window').width * 0.7,
+      justifyContent: "flex-end", 
+      alignItems: "center"
     },
     buttonContainer: {
       flex: 1,
