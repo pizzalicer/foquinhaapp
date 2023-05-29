@@ -7,10 +7,12 @@ export const styles = StyleSheet.create({
     },
     camera: {
       flex: 1,
-      width: Dimensions.get('window').width * 0.7,
-      height: Dimensions.get('window').width * 0.7,
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').width,
       justifyContent: "flex-end", 
-      alignItems: "center"
+      alignItems: "center",
+      marginTop: 40,
+      marginBottom: 40
     },
     buttonContainer: {
       flex: 1,
@@ -29,8 +31,13 @@ export const styles = StyleSheet.create({
       color: 'white',
     },
     img:{
-        width: Dimensions.get('window').width * 0.7,
-        height: Dimensions.get('window').width * 0.7,
-    }
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width,
+    },
+    botao:{
+      flexDirection: "row",
+      marginBottom: "10%",
+      justifyContent: "space-around"
+    },
   });
   
