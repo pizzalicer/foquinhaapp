@@ -8,6 +8,7 @@ import { colors } from '../../styles/colors';
 import { API_GOOGLE } from '@env'
 import { GooglePlaceData, GooglePlacesAutocomplete, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
 import MapViewDirections from 'react-native-maps-directions';
+import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 
 type ICoords = {
   latitude: number
@@ -65,7 +66,7 @@ export function LocationScreen() {
     }
   }, []);
 
-  async function handleDestination(data: GooglePlaceData, details: GooglePlaceDetail | null){
+  async function handleDestination(data: GooglePlaceData, details: GooglePlaceDetail | null) {
     if (details) {
       setDestination({
         latitude: details?.geometry.location.lat,
@@ -89,22 +90,59 @@ export function LocationScreen() {
     text = errorMsg;
   } else if (location) {
     text = JSON.stringify(location);
+  } else if (destination) {
+    text = JSON.stringify(destination);
 
   }
   return (
     <View style={styles.container}>
       {region ? (
-        <MapView region={region} style={styles.map}
-          showsUserLocation={true}> 
-          {marker && marker.map((i)=> (
-            <Marker key={i.latitude} coordinate={i} />
-          ))}
-          {coords && <Polyline
-          coordinates={coords}
-          strokeColor={colors.black}
-          strokeWidth={7}
-        />}
-        </MapView>
+        <>
+          <GooglePlacesAutocomplete
+            styles={{ container: styles.searchContainer, textInput: styles.searchInput }}
+            placeholder="Destino"
+            fetchDetails={true}
+            GooglePlacesDetailsQuery={{ fields: "geometry" }}
+            enablePoweredByContainer={false}
+            query={{
+              key: API_GOOGLE,
+              language: 'pt-BR'
+            }}
+            onFail={setErrorMsg}
+            onPress={handleDestination}
+          />
+          <MapView region={region} style={styles.map} showsUserLocation={true}>
+            {marker && marker.map((i) => (
+              <Marker key={i.latitude} coordinate={i}>
+                <Entypo name="location-pin" size={48} color={colors.black} />
+              </Marker>
+            ))}
+            {coords && <Polyline
+              coordinates={coords}
+              strokeColor={colors.black}
+              strokeWidth={7}
+            />}
+            {destination && (
+              <MapViewDirections
+                origin={region}
+                destination={destination}
+                apikey={API_GOOGLE}
+                strokeColor={colors.black}
+                strokeWidth={6}
+                onReady={(result) => {
+                  mapRef.current?.fitToCoordinates(result.coordinates, {
+                    edgePadding: {
+                      top: 24,
+                      bottom: 24,
+                      left: 24,
+                      right: 24
+                    }
+                  })
+                }}
+              />
+            )}
+          </MapView>
+        </>
       ) : (
         <Text style={styles.paragraph}>{text}</Text>
       )}
